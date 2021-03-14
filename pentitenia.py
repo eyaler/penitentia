@@ -21,7 +21,7 @@ c = '04152637'
 d = '04512673'
 flip_bits = False
 reverse_bits = False
-show_images = False
+show_images = True
 
 '''
 note: 0 is MSB unless flip_bits
