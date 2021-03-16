@@ -71,6 +71,10 @@ tup_a = Counter()
 tup_b = Counter()
 tup_c = Counter()
 tup_d = Counter()
+tup_a_red = Counter()
+tup_b_red = Counter()
+tup_c_red = Counter()
+tup_d_red = Counter()
 cnt_red = Counter()
 chk_red = {'1,1': 14, '1,2': 10, '1,3': 11, '1,4': 13, '2,1': 14, '2,2': 16, '2,3': 8, '2,4': 9, '3,1': 11, '3,2': 7, '3,3': 7, '3,4': 8, '4,1': 10, '4,2': 7, '4,3': 11, '4,4': 21}
 Quad = namedtuple('Quad', ['bytes_a', 'bytes_b', 'bytes_c', 'bytes_d', 'is_red'])
@@ -123,21 +127,33 @@ for filename in os.listdir(images_folder):
             tup_b[tuple(images[id][row][col].bytes_b)] += 1
             tup_c[tuple(images[id][row][col].bytes_c)] += 1
             tup_d[tuple(images[id][row][col].bytes_d)] += 1
+            if is_red:
+                tup_a_red[tuple(images[id][row][col].bytes_a)] += 1
+                tup_b_red[tuple(images[id][row][col].bytes_b)] += 1
+                tup_c_red[tuple(images[id][row][col].bytes_c)] += 1
+                tup_d_red[tuple(images[id][row][col].bytes_d)] += 1
             print(id,row,col,images[id][row][col])
     cv2.imwrite(output_folder+'/'+filename, img)
     if show_images:
         cv2.imshow('',img)
         cv2.setWindowTitle('', filename)
-        cv2.waitKey(0)
-print('a:',len(ch_a),ch_a.most_common(10))
-print('b:',len(ch_b),ch_b.most_common(10))
-print('c:',len(ch_c),ch_c.most_common(10))
-print('d:',len(ch_d),ch_d.most_common(10))
-print('a:',len(tup_a),tup_a.most_common(10))
-print('b:',len(tup_b),tup_b.most_common(10))
-print('c:',len(tup_c),tup_c.most_common(10))
-print('d:',len(tup_d),tup_d.most_common(10))
-print('red:',cnt_red)
+        ch = cv2.waitKey(0)
+        if ch==27:
+            cv2.destroyWindow('')
+            show_images = False
+print('a:',len(ch_a),ch_a.most_common(15))
+print('b:',len(ch_b),ch_b.most_common(15))
+print('c:',len(ch_c),ch_c.most_common(15))
+print('d:',len(ch_d),ch_d.most_common(15))
+print('a:',len(tup_a),tup_a.most_common(15))
+print('b:',len(tup_b),tup_b.most_common(15))
+print('c:',len(tup_c),tup_c.most_common(15))
+print('d:',len(tup_d),tup_d.most_common(15))
+print('a_red:',len(tup_a_red),tup_a_red.most_common(15))
+print('b_red:',len(tup_b_red),tup_b_red.most_common(15))
+print('c_red:',len(tup_c_red),tup_c_red.most_common(15))
+print('d_red:',len(tup_d_red),tup_d_red.most_common(15))
+print('red:',sum(cnt_red.values()),cnt_red)
 for red in chk_red:
     if chk_red[red]!=cnt_red[red]:
         print('Wrong red count in %s: found %d instead of %d'%(red,cnt_red[red],chk_red[red]))
