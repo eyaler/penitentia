@@ -1,4 +1,4 @@
 # The Penitentia Manuscript Parser
 https://www.hydeandrugg.com/pages/codes/penitentia
 
-![pentitenia 1,1.png](pentitenia%201,1.png "pentitenia 1,1.png")
+![penitentia 1,1.png](penitentia%201,1.png "penitentia 1,1.png")
