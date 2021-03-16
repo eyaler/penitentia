@@ -21,7 +21,9 @@ c = '04152637'
 d = '04512673'
 flip_bits = False
 reverse_bits = False
+as_hex = True
 show_images = True
+mc_len = 20
 
 '''
 note: 0 is MSB unless flip_bits
@@ -43,12 +45,20 @@ d:
 1256
 '''
 
-def to_int(lst):
+def to_byte(lst):
     if flip_bits:
         lst = [1-d for d in lst]
     if reverse_bits:
         lst = lst[::-1]
-    return int(''.join(str(d) for d in lst), 2)
+    byte = int(''.join(str(d) for d in lst), 2)
+    if as_hex:
+        byte = ('0'+hex(byte)[2:])[-2:]
+    return byte
+
+def to_dword(lst):
+    if as_hex:
+        return ''.join(lst)
+    return tuple(lst)
 
 os.makedirs(images_folder, exist_ok=True)
 os.makedirs(output_folder, exist_ok=True)
@@ -63,18 +73,18 @@ for j in range(1,5):
                 pass
 
 images = {}
-ch_a = Counter()
-ch_b = Counter()
-ch_c = Counter()
-ch_d = Counter()
-tup_a = Counter()
-tup_b = Counter()
-tup_c = Counter()
-tup_d = Counter()
-tup_a_red = Counter()
-tup_b_red = Counter()
-tup_c_red = Counter()
-tup_d_red = Counter()
+byte_a = Counter()
+byte_b = Counter()
+byte_c = Counter()
+byte_d = Counter()
+dword_a = Counter()
+dword_b = Counter()
+dword_c = Counter()
+dword_d = Counter()
+dword_a_red = Counter()
+dword_b_red = Counter()
+dword_c_red = Counter()
+dword_d_red = Counter()
 cnt_red = Counter()
 chk_red = {'1,1': 14, '1,2': 10, '1,3': 11, '1,4': 13, '2,1': 14, '2,2': 16, '2,3': 8, '2,4': 9, '3,1': 11, '3,2': 7, '3,3': 7, '3,4': 8, '4,1': 10, '4,2': 7, '4,3': 11, '4,4': 21}
 Quad = namedtuple('Quad', ['bytes_a', 'bytes_b', 'bytes_c', 'bytes_d', 'is_red'])
@@ -115,24 +125,28 @@ for filename in os.listdir(images_folder):
                             bytes_d[int(d[i])] = 1
                         img[y, x1:x2] = [is_red*255, 255*(1-is_red), 0]
                         i += 1
-                    images[id][row][col].bytes_a[line] = to_int(bytes_a)
-                    images[id][row][col].bytes_b[line] = to_int(bytes_b)
-                    images[id][row][col].bytes_c[line] = to_int(bytes_c)
-                    images[id][row][col].bytes_d[line] = to_int(bytes_d)
-                    ch_a[images[id][row][col].bytes_a[line]] += 1
-                    ch_b[images[id][row][col].bytes_b[line]] += 1
-                    ch_c[images[id][row][col].bytes_c[line]] += 1
-                    ch_d[images[id][row][col].bytes_d[line]] += 1
-            tup_a[tuple(images[id][row][col].bytes_a)] += 1
-            tup_b[tuple(images[id][row][col].bytes_b)] += 1
-            tup_c[tuple(images[id][row][col].bytes_c)] += 1
-            tup_d[tuple(images[id][row][col].bytes_d)] += 1
+                    images[id][row][col].bytes_a[line] = to_byte(bytes_a)
+                    images[id][row][col].bytes_b[line] = to_byte(bytes_b)
+                    images[id][row][col].bytes_c[line] = to_byte(bytes_c)
+                    images[id][row][col].bytes_d[line] = to_byte(bytes_d)
+                    byte_a[images[id][row][col].bytes_a[line]] += 1
+                    byte_b[images[id][row][col].bytes_b[line]] += 1
+                    byte_c[images[id][row][col].bytes_c[line]] += 1
+                    byte_d[images[id][row][col].bytes_d[line]] += 1
+            dword_a[to_dword(images[id][row][col].bytes_a)] += 1
+            dword_b[to_dword(images[id][row][col].bytes_b)] += 1
+            dword_c[to_dword(images[id][row][col].bytes_c)] += 1
+            dword_d[to_dword(images[id][row][col].bytes_d)] += 1
             if is_red:
-                tup_a_red[tuple(images[id][row][col].bytes_a)] += 1
-                tup_b_red[tuple(images[id][row][col].bytes_b)] += 1
-                tup_c_red[tuple(images[id][row][col].bytes_c)] += 1
-                tup_d_red[tuple(images[id][row][col].bytes_d)] += 1
-            print(id,row,col,images[id][row][col])
+                dword_a_red[to_dword(images[id][row][col].bytes_a)] += 1
+                dword_b_red[to_dword(images[id][row][col].bytes_b)] += 1
+                dword_c_red[to_dword(images[id][row][col].bytes_c)] += 1
+                dword_d_red[to_dword(images[id][row][col].bytes_d)] += 1
+            if as_hex:
+                print(id, row, col, ''.join(images[id][row][col].bytes_a), ''.join(images[id][row][col].bytes_b),
+                  ''.join(images[id][row][col].bytes_c), ''.join(images[id][row][col].bytes_d), is_red)
+            else:
+                print(id,row,col,images[id][row][col])
     cv2.imwrite(output_folder+'/'+filename, img)
     if show_images:
         cv2.imshow('',img)
@@ -141,18 +155,18 @@ for filename in os.listdir(images_folder):
         if ch==27:
             cv2.destroyWindow('')
             show_images = False
-print('a:',len(ch_a),ch_a.most_common(15))
-print('b:',len(ch_b),ch_b.most_common(15))
-print('c:',len(ch_c),ch_c.most_common(15))
-print('d:',len(ch_d),ch_d.most_common(15))
-print('a:',len(tup_a),tup_a.most_common(15))
-print('b:',len(tup_b),tup_b.most_common(15))
-print('c:',len(tup_c),tup_c.most_common(15))
-print('d:',len(tup_d),tup_d.most_common(15))
-print('a_red:',len(tup_a_red),tup_a_red.most_common(15))
-print('b_red:',len(tup_b_red),tup_b_red.most_common(15))
-print('c_red:',len(tup_c_red),tup_c_red.most_common(15))
-print('d_red:',len(tup_d_red),tup_d_red.most_common(15))
+print('a:',len(byte_a),byte_a.most_common(mc_len))
+print('b:',len(byte_b),byte_b.most_common(mc_len))
+print('c:',len(byte_c),byte_c.most_common(mc_len))
+print('d:',len(byte_d),byte_d.most_common(mc_len))
+print('a:',len(dword_a),dword_a.most_common(mc_len))
+print('b:',len(dword_b),dword_b.most_common(mc_len))
+print('c:',len(dword_c),dword_c.most_common(mc_len))
+print('d:',len(dword_d),dword_d.most_common(mc_len))
+print('a_red:',len(dword_a_red),dword_a_red.most_common(mc_len))
+print('b_red:',len(dword_b_red),dword_b_red.most_common(mc_len))
+print('c_red:',len(dword_c_red),dword_c_red.most_common(mc_len))
+print('d_red:',len(dword_d_red),dword_d_red.most_common(mc_len))
 print('red:',sum(cnt_red.values()),cnt_red)
 for red in chk_red:
     if chk_red[red]!=cnt_red[red]:
