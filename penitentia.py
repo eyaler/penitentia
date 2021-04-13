@@ -10,9 +10,10 @@ marks_folder = 'marks'
 hex_folder = 'hex'
 y0 = 59
 x0 = 55
-y_last = 1018
-x_last = 1158
-bad_ids = {'2,3':(1010,1149), '2,4':(1012,1149), '3,1':(1020,x_last), '3,4':(1015,x_last)}
+yx_last = {'1,1':(1018,1158), '1,2':(1018,1158), '1,3':(1016,1155), '1,4':(1016,1155),
+           '2,1':(1015,1155), '2,2':(1016,1155), '2,3':(1010,1149), '2,4':(1012,1151),
+           '3,1':(1021,1160), '3,2':(1016,1158), '3,3':(1017,1156), '3,4':(1015,1154),
+           '4,1':(1016,1156), '4,2':(1016,1155), '4,3':(1019,1159), '4,4':(1019,1159)}
 dline = (111-y0)/3
 dy = 6
 dx = (118-x0)/3
@@ -109,8 +110,8 @@ for filename in os.listdir(images_folder):
             images[id].append([])
             for col in range(12):
                 images[id][row].append([])
-                drow = ((bad_ids[id][0] if id in bad_ids else y_last) - y0) / 11
-                dcol = ((bad_ids[id][1] if id in bad_ids else x_last) - x0) / 11
+                drow = (yx_last[id][0] - y0) / 11
+                dcol = (yx_last[id][1] - x0) / 11
                 y = int(y0 + row * drow)
                 x = int(x0 + col * dcol)
                 x1 = max(x - xtol, 0)
