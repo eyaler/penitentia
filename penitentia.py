@@ -106,10 +106,10 @@ dword_a_red = Counter()
 dword_b_red = Counter()
 dword_c_red = Counter()
 dword_d_red = Counter()
-dword_a_red_colocation = defaultdict(list)
-dword_b_red_colocation = defaultdict(list)
-dword_c_red_colocation = defaultdict(list)
-dword_d_red_colocation = defaultdict(list)
+dword_a_red_collocation = defaultdict(list)
+dword_b_red_collocation = defaultdict(list)
+dword_c_red_collocation = defaultdict(list)
+dword_d_red_collocation = defaultdict(list)
 cnt_red = Counter()
 chk_red = {'1,1': 14, '1,2': 10, '1,3': 11, '1,4': 13, '2,1': 14, '2,2': 16, '2,3': 8, '2,4': 9, '3,1': 11, '3,2': 7, '3,3': 7, '3,4': 8, '4,1': 10, '4,2': 7, '4,3': 11, '4,4': 21}
 Quad = namedtuple('Quad', ['bytes_a', 'bytes_b', 'bytes_c', 'bytes_d', 'is_red'])
@@ -168,10 +168,10 @@ for filename in os.listdir(images_folder):
                     dword_b_red[to_dword(images[id][row][col].bytes_b, as_hex)] += 1
                     dword_c_red[to_dword(images[id][row][col].bytes_c, as_hex)] += 1
                     dword_d_red[to_dword(images[id][row][col].bytes_d, as_hex)] += 1
-                    dword_a_red_colocation[(to_dword(images[id][row][col].bytes_a, as_hex), row + 1, col + 1)].append(id)
-                    dword_b_red_colocation[(to_dword(images[id][row][col].bytes_b, as_hex), row + 1, col + 1)].append(id)
-                    dword_c_red_colocation[(to_dword(images[id][row][col].bytes_c, as_hex), row + 1, col + 1)].append(id)
-                    dword_d_red_colocation[(to_dword(images[id][row][col].bytes_d, as_hex), row + 1, col + 1)].append(id)
+                    dword_a_red_collocation[(to_dword(images[id][row][col].bytes_a, as_hex), row + 1, col + 1)].append(id)
+                    dword_b_red_collocation[(to_dword(images[id][row][col].bytes_b, as_hex), row + 1, col + 1)].append(id)
+                    dword_c_red_collocation[(to_dword(images[id][row][col].bytes_c, as_hex), row + 1, col + 1)].append(id)
+                    dword_d_red_collocation[(to_dword(images[id][row][col].bytes_d, as_hex), row + 1, col + 1)].append(id)
                 if as_hex:
                     print(id, row, col, ''.join(images[id][row][col].bytes_a), ''.join(images[id][row][col].bytes_b), 
                           ''.join(images[id][row][col].bytes_c), ''.join(images[id][row][col].bytes_d), is_red)
@@ -204,14 +204,14 @@ print('b_red:', len(dword_b_red), dword_b_red.most_common(mc_len))
 print('c_red:', len(dword_c_red), dword_c_red.most_common(mc_len))
 print('d_red:', len(dword_d_red), dword_d_red.most_common(mc_len))
 print('red:', sum(cnt_red.values()), cnt_red)
-for x in [dword_a_red_colocation, dword_b_red_colocation, dword_c_red_colocation, dword_d_red_colocation]:
+for x in [dword_a_red_collocation, dword_b_red_collocation, dword_c_red_collocation, dword_d_red_collocation]:
     for k, v in list(x.items()):
         if len(v) < 2:
             del x[k]
-print('a_red_colocation:', len(dword_a_red_colocation), sorted(dword_a_red_colocation.items(), key=lambda x: (-len(x[1]), x[0])))
-print('b_red_colocation:', len(dword_b_red_colocation), sorted(dword_b_red_colocation.items(), key=lambda x: (-len(x[1]), x[0])))
-print('c_red_colocation:', len(dword_c_red_colocation), sorted(dword_c_red_colocation.items(), key=lambda x: (-len(x[1]), x[0])))
-print('d_red_colocation:', len(dword_d_red_colocation), sorted(dword_d_red_colocation.items(), key=lambda x: (-len(x[1]), x[0])))
+print('a_red_collocation:', len(dword_a_red_collocation), sorted(dword_a_red_collocation.items(), key=lambda x: (-len(x[1]), x[0])))
+print('b_red_collocation:', len(dword_b_red_collocation), sorted(dword_b_red_collocation.items(), key=lambda x: (-len(x[1]), x[0])))
+print('c_red_collocation:', len(dword_c_red_collocation), sorted(dword_c_red_collocation.items(), key=lambda x: (-len(x[1]), x[0])))
+print('d_red_collocation:', len(dword_d_red_collocation), sorted(dword_d_red_collocation.items(), key=lambda x: (-len(x[1]), x[0])))
 
 for red in chk_red:
     if chk_red[red] != cnt_red[red]:
@@ -223,7 +223,7 @@ import networkx as nx
 
 
 G = nx.Graph()
-for edges in dword_a_red_colocation.values():
+for edges in dword_a_red_collocation.values():
     for i in range(len(edges) - 1):
         for j in range(i + 1, len(edges)):
             G.add_edge(edges[i], edges[j])

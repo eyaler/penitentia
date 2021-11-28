@@ -1,0 +1,4 @@
+matplotlib
+networkx
+opencv-python
+wget
