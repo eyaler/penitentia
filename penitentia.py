@@ -168,10 +168,10 @@ for filename in os.listdir(images_folder):
                     dword_b_red[to_dword(images[id][row][col].bytes_b, as_hex)] += 1
                     dword_c_red[to_dword(images[id][row][col].bytes_c, as_hex)] += 1
                     dword_d_red[to_dword(images[id][row][col].bytes_d, as_hex)] += 1
-                    dword_a_red_colocation[(to_dword(images[id][row][col].bytes_a, as_hex), row, col)].append(id)
-                    dword_b_red_colocation[(to_dword(images[id][row][col].bytes_b, as_hex), row, col)].append(id)
-                    dword_c_red_colocation[(to_dword(images[id][row][col].bytes_c, as_hex), row, col)].append(id)
-                    dword_d_red_colocation[(to_dword(images[id][row][col].bytes_d, as_hex), row, col)].append(id)
+                    dword_a_red_colocation[(to_dword(images[id][row][col].bytes_a, as_hex), row + 1, col + 1)].append(id)
+                    dword_b_red_colocation[(to_dword(images[id][row][col].bytes_b, as_hex), row + 1, col + 1)].append(id)
+                    dword_c_red_colocation[(to_dword(images[id][row][col].bytes_c, as_hex), row + 1, col + 1)].append(id)
+                    dword_d_red_colocation[(to_dword(images[id][row][col].bytes_d, as_hex), row + 1, col + 1)].append(id)
                 if as_hex:
                     print(id, row, col, ''.join(images[id][row][col].bytes_a), ''.join(images[id][row][col].bytes_b), 
                           ''.join(images[id][row][col].bytes_c), ''.join(images[id][row][col].bytes_d), is_red)
@@ -216,3 +216,21 @@ print('d_red_colocation:', len(dword_d_red_colocation), sorted(dword_d_red_coloc
 for red in chk_red:
     if chk_red[red] != cnt_red[red]:
         print('Wrong red count in %s: found %d instead of %d' % (red, cnt_red[red], chk_red[red]))
+
+
+import matplotlib.pyplot as plt
+import networkx as nx
+
+
+G = nx.Graph()
+for edges in dword_a_red_colocation.values():
+    for i in range(len(edges) - 1):
+        for j in range(i + 1, len(edges)):
+            G.add_edge(edges[i], edges[j])
+for i in range(1, 5):
+    for j in range(1, 5):
+        G.add_node('%d,%d' % (i, j))
+print('connected components:', list(nx.connected_components(G)))
+nx.draw(G, with_labels=True)
+plt.savefig('network.png')
+plt.show()

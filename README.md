@@ -3,6 +3,10 @@ https://www.hydeandrugg.com/pages/codes/penitentia
 
 ![penitentia 1,1.png](penitentia%201,1.png "penitentia 1,1.png")
 
+![colocations.png](colocations.png "colocations.png")
+
+![network.png](network.png "network.png")
+
 ```
 7ced66b1 e4fbfd76 c1d96493 7c8df687 10733695 857de167 7b85adf7 7c0f6724 3edacf04 69dfb9e2 4aae4cb3 4e19a101
 af73c1f2 f86c29a1 e9598d63 c10bd8b0 06a49606 7ced66b1 2ed0d903 48ca5551 7ced66b1 2ed0d903 b0f50cc0 b6575686
